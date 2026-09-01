@@ -71,6 +71,6 @@ Al principio pensé que tener un banner principal agregaría mucho valor al usua
 
 _El time-box es de 4 horas. Si te quedaste corto, dilo aquí — también cuenta._
 
-Por el momento llevo 3.18 horas, así que yo creo que si hago el deploy.
+El tiempo final fue de 3.85 horas (231 minutos).
 
 El desglose de las horas se encuentra [aquí](https://docs.google.com/spreadsheets/d/1fypkULEc7jPTX62itTW6o_zKrU39UbKrUVAq8laueZY/edit?usp=sharing)
