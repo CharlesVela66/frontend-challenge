@@ -17,6 +17,18 @@ export function totalSpent(transactions: Transaction[]): number {
     .reduce((sum, t) => sum + Math.abs(t.monto), 0);
 }
 
+/**
+ * Mirror of `totalSpent`: sum of `monto` for positive, `confirmada`,
+ * in-period transactions — how much came in this month. Same filters,
+ * opposite sign; not merely `-totalSpent` since the set of qualifying
+ * transactions differs (positive vs. negative `monto`).
+ */
+export function totalIncome(transactions: Transaction[]): number {
+  return transactions
+    .filter((t) => esConfirmadaEnPeriodo(t) && t.monto > 0)
+    .reduce((sum, t) => sum + t.monto, 0);
+}
+
 export interface CategorySpend {
   categoria: string;
   total: number;
