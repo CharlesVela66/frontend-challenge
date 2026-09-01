@@ -1,4 +1,5 @@
 import type { MovimientoValidado } from '../validators/movimiento.schema';
+import { TIPOS_CAMBIO_A_MXN } from '../constants/tipo-cambio.constants';
 import type { Transaction } from '../types/movimiento.types';
 import { isEstadoConocido } from '../types/movimiento.types';
 
@@ -16,6 +17,20 @@ function estaEnPeriodo(fecha: string, periodo: string): boolean {
 }
 
 /**
+ * Converts `monto` to MXN using the fixed rate in `TIPOS_CAMBIO_A_MXN`.
+ * A currency with no entry (already `'MXN'`, or one nobody's added a rate
+ * for) passes through unchanged — this is why the lookup, not an
+ * if/else on `'USD'` specifically, is the right shape here.
+ */
+function convertirAMxn(monto: number, moneda: string): { monto: number; moneda: string } {
+  const tipoCambio = TIPOS_CAMBIO_A_MXN[moneda];
+  if (tipoCambio === undefined) {
+    return { monto, moneda };
+  }
+  return { monto: monto * tipoCambio, moneda: 'MXN' };
+}
+
+/**
  * Turns one schema-validated movimiento into a `Transaction`, or rejects it
  * with a reason. Three business-validity rules live here, separate from
  * the zod schema (which only checks shape):
@@ -28,7 +43,9 @@ function estaEnPeriodo(fecha: string, periodo: string): boolean {
  *   scheduled future charge is the one deliberate exception.
  *
  * Everything else here is normalization, not filtering: `categoria` null/""
- * becomes `"Otros"`, and `estado` maps to a known value or `'desconocido'`.
+ * becomes `"Otros"`, `estado` maps to a known value or `'desconocido'`, and
+ * `monto`/`moneda` get converted to MXN (see `convertirAMxn`) so nothing
+ * downstream ever has to reason about mixed currencies.
  */
 export function normalizeMovimiento(movimiento: MovimientoValidado, periodo: string): NormalizationResult {
   if (movimiento.cuenta === null) {
@@ -49,12 +66,14 @@ export function normalizeMovimiento(movimiento: MovimientoValidado, periodo: str
   const categoria =
     movimiento.categoria === null || movimiento.categoria === '' ? CATEGORIA_POR_DEFECTO : movimiento.categoria;
 
+  const { monto, moneda } = convertirAMxn(movimiento.monto, movimiento.moneda);
+
   const transaction: Transaction = {
     id: movimiento.id,
     fecha: movimiento.fecha,
     descripcion: movimiento.descripcion,
-    monto: movimiento.monto,
-    moneda: movimiento.moneda,
+    monto,
+    moneda,
     categoria,
     cuenta: movimiento.cuenta,
     estado: isEstadoConocido(movimiento.estado) ? movimiento.estado : 'desconocido',

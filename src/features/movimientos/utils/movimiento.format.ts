@@ -1,10 +1,12 @@
 /**
  * Formats an amount in its own currency — always the real currency code,
- * never silently relabeled as MXN. There's no FX rate available for the
- * one USD record in the dataset, so it's shown at face value tagged as
- * USD rather than converted or hidden. Falls back to a plain number +
- * code if `moneda` isn't a currency `Intl` recognizes, instead of
- * throwing on a data value we don't control.
+ * never silently relabeled as MXN. Every `Transaction.moneda` is `'MXN'`
+ * by the time it gets here (the normalizer converts anything else, see
+ * `convertirAMxn`), so this mainly just formats pesos — but it stays
+ * currency-aware rather than hardcoding MXN, as a safety net for any
+ * future currency nobody's added a conversion rate for yet. Falls back to
+ * a plain number + code if `moneda` isn't a currency `Intl` recognizes,
+ * instead of throwing on a data value we don't control.
  */
 export function formatMonto(monto: number, moneda: string): string {
   try {
