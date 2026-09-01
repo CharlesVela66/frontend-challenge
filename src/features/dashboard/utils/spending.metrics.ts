@@ -1,20 +1,22 @@
 import type { Transaction } from '@/features/movimientos/types/movimiento.types';
 
-function esConfirmadaEnPeriodo(transaction: Transaction): boolean {
-  return transaction.enPeriodo && transaction.estado === 'confirmada';
+function calificaParaResumen(transaction: Transaction): boolean {
+  return transaction.enPeriodo && transaction.estado === 'confirmada' && !transaction.cuentaDesconocida;
 }
 
 /**
  * `totalSpent`, `totalIncome`, `spendByCategory`, and `topCategory` all
- * scope to confirmada + in-period only — a `pendiente`/`programada`
- * movement hasn't settled yet, so it's excluded here even though the
- * transactions table shows it. That's why a manual sum of a category's
- * rows in the table can come out higher than that category's bar: the
- * table shows everything valid, these numbers show only what's settled.
- * Surfaced in the UI (as a caption/hint) next to every figure that uses
- * this scope, so the gap reads as intentional rather than a bug.
+ * scope to confirmada + in-period + known-account only:
+ * - a `pendiente`/`programada` movement hasn't settled yet, so it's
+ *   excluded here even though the transactions table shows it;
+ * That's why a manual sum of a category's rows in the table can come out
+ * higher than that category's bar: the table shows everything valid,
+ * these numbers show only what's settled and attributable. Surfaced in
+ * the UI (as a caption/hint) next to every figure that uses this scope,
+ * so the gap reads as intentional rather than a bug.
  */
-export const NOTA_ALCANCE_GASTO = 'Solo movimientos confirmados de este mes (no incluye pendientes ni programados).';
+export const NOTA_ALCANCE_GASTO =
+  'Solo movimientos confirmados de este mes con cuenta conocida (no incluye pendientes, programados, ni el movimiento en disputa).';
 
 /**
  * How much cash actually left this month: sum of `abs(monto)` for
@@ -25,7 +27,7 @@ export const NOTA_ALCANCE_GASTO = 'Solo movimientos confirmados de este mes (no 
  */
 export function totalSpent(transactions: Transaction[]): number {
   return transactions
-    .filter((t) => esConfirmadaEnPeriodo(t) && t.monto < 0)
+    .filter((t) => calificaParaResumen(t) && t.monto < 0)
     .reduce((sum, t) => sum + Math.abs(t.monto), 0);
 }
 
@@ -37,7 +39,7 @@ export function totalSpent(transactions: Transaction[]): number {
  */
 export function totalIncome(transactions: Transaction[]): number {
   return transactions
-    .filter((t) => esConfirmadaEnPeriodo(t) && t.monto > 0)
+    .filter((t) => calificaParaResumen(t) && t.monto > 0)
     .reduce((sum, t) => sum + t.monto, 0);
 }
 
@@ -61,7 +63,7 @@ export function spendByCategory(transactions: Transaction[]): CategorySpend[] {
   const sumsByCategory = new Map<string, number>();
 
   for (const t of transactions) {
-    if (!esConfirmadaEnPeriodo(t) || t.monto >= 0) continue;
+    if (!calificaParaResumen(t) || t.monto >= 0) continue;
     sumsByCategory.set(t.categoria, (sumsByCategory.get(t.categoria) ?? 0) + Math.abs(t.monto));
   }
 
@@ -92,7 +94,7 @@ export function dayWithHighestSpend(transactions: Transaction[]): DailySpend | u
   const totalsByDay = new Map<string, number>();
 
   for (const t of transactions) {
-    if (!esConfirmadaEnPeriodo(t) || t.monto >= 0) continue;
+    if (!calificaParaResumen(t) || t.monto >= 0) continue;
     const dia = t.fecha.slice(0, 10);
     totalsByDay.set(dia, (totalsByDay.get(dia) ?? 0) + Math.abs(t.monto));
   }

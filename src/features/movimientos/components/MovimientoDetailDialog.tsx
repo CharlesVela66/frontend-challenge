@@ -1,3 +1,4 @@
+import { TriangleAlert } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
@@ -42,7 +43,15 @@ export function MovimientoDetailDialog({ transactionId, onOpenChange }: Movimien
 
             <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-sm">
               <dt className="text-muted-foreground">Cuenta</dt>
-              <dd>{transaction.cuenta}</dd>
+              <dd className="flex items-center gap-1.5">
+                {transaction.cuentaDesconocida ? (
+                  <TriangleAlert
+                    className="size-4 shrink-0 text-yellow-500"
+                    aria-hidden="true"
+                  />
+                ) : null}
+                {transaction.cuenta}
+              </dd>
 
               <dt className="text-muted-foreground">Fecha</dt>
               <dd>{formatFechaHora(transaction.fecha)}</dd>

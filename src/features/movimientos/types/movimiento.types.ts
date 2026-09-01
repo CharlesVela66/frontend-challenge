@@ -15,7 +15,8 @@ export interface Transaction {
   monto: number;
   moneda: string;
   categoria: string;
-  cuenta: string;
+  cuenta: string | null;
+  cuentaDesconocida: boolean;
   estado: Estado;
   /**
    * True when `fecha`'s `YYYY-MM` matches the dataset's `periodo`. False
