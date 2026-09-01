@@ -14,3 +14,14 @@ export const VARIANTE_POR_ESTADO: Record<Estado, BadgeVariant> = {
   en_disputa: 'destructive',
   desconocido: 'outline',
 };
+export const ETIQUETA_POR_ESTADO: Record<Estado, string> = {
+  confirmada: 'Confirmada',
+  pendiente: 'Pendiente',
+  programada: 'Programada',
+  en_disputa: 'En disputa',
+  desconocido: 'Desconocido',
+};
+
+export const CLASE_POR_ESTADO: Partial<Record<Estado, string>> = {
+  confirmada: 'bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400',
+};

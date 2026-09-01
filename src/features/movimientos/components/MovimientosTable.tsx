@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { getCategoriasConocidas } from '../constants/categorias.constants';
+import { ETIQUETA_POR_ESTADO } from '../constants/estado.constants';
 import { useMovimientos } from '../state/useMovimientos';
 import type { ColumnaOrden, DireccionOrden } from '../utils/movimientos.table.utils';
 import { filtrarYOrdenarMovimientos } from '../utils/movimientos.table.utils';
@@ -124,13 +125,15 @@ export function TransactionsTable() {
           }}
         >
           <SelectTrigger className="w-full sm:w-40">
-            <SelectValue>{(value: string) => (value === TODOS_ESTADOS ? 'Todos los estados' : value)}</SelectValue>
+            <SelectValue>
+              {(value: string) => (value === TODOS_ESTADOS ? 'Todos los estados' : ETIQUETA_POR_ESTADO[value as Estado])}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={TODOS_ESTADOS}>Todos los estados</SelectItem>
             {estados.map((estado) => (
               <SelectItem key={estado} value={estado}>
-                {estado}
+                {ETIQUETA_POR_ESTADO[estado]}
               </SelectItem>
             ))}
           </SelectContent>

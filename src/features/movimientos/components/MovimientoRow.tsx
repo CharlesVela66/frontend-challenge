@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { CATEGORIA_POR_DEFECTO } from '../transformers/normalize.movimiento.transformer';
-import { VARIANTE_POR_ESTADO } from '../constants/estado.constants';
+import { CLASE_POR_ESTADO, ETIQUETA_POR_ESTADO, VARIANTE_POR_ESTADO } from '../constants/estado.constants';
 import type { Transaction } from '../types/movimiento.types';
 import { formatFecha, formatMonto } from '../utils/movimiento.format';
 
@@ -33,7 +33,9 @@ export function MovimientoRow({ transaction, onSelect }: MovimientoRowProps) {
         {formatMonto(transaction.monto, transaction.moneda)}
       </TableCell>
       <TableCell>
-        <Badge variant={VARIANTE_POR_ESTADO[transaction.estado]}>{transaction.estado}</Badge>
+        <Badge variant={VARIANTE_POR_ESTADO[transaction.estado]} className={CLASE_POR_ESTADO[transaction.estado]}>
+          {ETIQUETA_POR_ESTADO[transaction.estado]}
+        </Badge>
       </TableCell>
       <TableCell>{formatFecha(transaction.fecha)}</TableCell>
       <TableCell>

@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getCategoriasConocidas } from '../constants/categorias.constants';
-import { VARIANTE_POR_ESTADO } from '../constants/estado.constants';
+import { CLASE_POR_ESTADO, ETIQUETA_POR_ESTADO, VARIANTE_POR_ESTADO } from '../constants/estado.constants';
 import { useMovimientos } from '../state/useMovimientos';
 import { formatFechaHora, formatMonto } from '../utils/movimiento.format';
 
@@ -63,7 +63,9 @@ export function MovimientoDetailDialog({ transactionId, onOpenChange }: Movimien
 
               <dt className="text-muted-foreground">Estado</dt>
               <dd>
-                <Badge variant={VARIANTE_POR_ESTADO[transaction.estado]}>{transaction.estado}</Badge>
+                <Badge variant={VARIANTE_POR_ESTADO[transaction.estado]} className={CLASE_POR_ESTADO[transaction.estado]}>
+                  {ETIQUETA_POR_ESTADO[transaction.estado]}
+                </Badge>
               </dd>
             </dl>
 
