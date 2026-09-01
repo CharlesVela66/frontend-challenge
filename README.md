@@ -22,28 +22,26 @@ timestamp the start of the time-box.
 ## Requirements
 
 - Node `>=22.12` (there's an `.nvmrc`)
-- pnpm 10 (`corepack enable`). If you'd rather use npm or yarn, go ahead: delete the
-  `packageManager` field from `package.json` and that's it.
+- npm (ships with Node)
 
 ## How to run it
 
 ```bash
-corepack enable
-pnpm install
-pnpm dev
+npm install
+npm run dev
 ```
 
 It runs at http://localhost:5173.
 
 ## Scripts
 
-| Script           | What it does                     |
-| ---------------- | -------------------------------- |
-| `pnpm dev`       | Development server               |
-| `pnpm build`     | Typecheck + production build     |
-| `pnpm preview`   | Serves the build                 |
-| `pnpm lint`      | ESLint                           |
-| `pnpm typecheck` | TypeScript only                  |
+| Script              | What it does                     |
+| -------------------- | -------------------------------- |
+| `npm run dev`       | Development server               |
+| `npm run build`     | Typecheck + production build     |
+| `npm run preview`   | Serves the build                 |
+| `npm run lint`      | ESLint                           |
+| `npm run typecheck` | TypeScript only                  |
 
 ## The data
 
