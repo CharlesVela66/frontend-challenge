@@ -2,7 +2,7 @@ import type { MovimientoValidado } from '../validators/movimiento.schema';
 import type { Transaction } from '../types/movimiento.types';
 import { isEstadoConocido } from '../types/movimiento.types';
 
-export type NormalizationFailureReason = 'invalid_cuenta' | 'invalid_periodo';
+export type NormalizationFailureReason = 'invalid_cuenta' | 'invalid_periodo' | 'invalid_monto';
 
 export type NormalizationResult =
   | { ok: true; transaction: Transaction }
@@ -17,10 +17,13 @@ function estaEnPeriodo(fecha: string, periodo: string): boolean {
 
 /**
  * Turns one schema-validated movimiento into a `Transaction`, or rejects it
- * with a reason. Two business-validity rules live here, separate from the
- * zod schema (which only checks shape):
+ * with a reason. Three business-validity rules live here, separate from
+ * the zod schema (which only checks shape):
  *
  * - `cuenta === null` → invalid, the record is not a transaction we show.
+ * - `monto === 0` → invalid — nothing actually moved (e.g. a $0.00 fee
+ *   line), so it's not a "movimiento" for this screen's purposes, not a
+ *   real expense or income.
  * - date outside `periodo` AND not `estado: 'programada'` → invalid. A
  *   scheduled future charge is the one deliberate exception.
  *
@@ -30,6 +33,10 @@ function estaEnPeriodo(fecha: string, periodo: string): boolean {
 export function normalizeMovimiento(movimiento: MovimientoValidado, periodo: string): NormalizationResult {
   if (movimiento.cuenta === null) {
     return { ok: false, reason: 'invalid_cuenta', id: movimiento.id };
+  }
+
+  if (movimiento.monto === 0) {
+    return { ok: false, reason: 'invalid_monto', id: movimiento.id };
   }
 
   const enPeriodo = estaEnPeriodo(movimiento.fecha, periodo);

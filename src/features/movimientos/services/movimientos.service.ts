@@ -11,6 +11,7 @@ interface ExclusionCounts {
   invalid_shape: number;
   invalid_cuenta: number;
   invalid_periodo: number;
+  invalid_monto: number;
   duplicate: number;
 }
 
@@ -26,7 +27,13 @@ interface ExclusionCounts {
  */
 export function getMovimientos(): Transaction[] {
   const parsedTransactions: Transaction[] = [];
-  const excluded: ExclusionCounts = { invalid_shape: 0, invalid_cuenta: 0, invalid_periodo: 0, duplicate: 0 };
+  const excluded: ExclusionCounts = {
+    invalid_shape: 0,
+    invalid_cuenta: 0,
+    invalid_periodo: 0,
+    invalid_monto: 0,
+    duplicate: 0,
+  };
 
   for (const raw of data.movimientos) {
     const parsed = movimientoSchema.safeParse(raw);
@@ -48,12 +55,18 @@ export function getMovimientos(): Transaction[] {
   const transactions = dedupeMovimientos(parsedTransactions);
   excluded.duplicate = parsedTransactions.length - transactions.length;
 
-  const total = excluded.invalid_shape + excluded.invalid_cuenta + excluded.invalid_periodo + excluded.duplicate;
+  const total =
+    excluded.invalid_shape +
+    excluded.invalid_cuenta +
+    excluded.invalid_periodo +
+    excluded.invalid_monto +
+    excluded.duplicate;
   if (total > 0) {
     console.info(
       `[movimientos] excluidos ${total} de ${data.movimientos.length}: ` +
         `${excluded.invalid_shape} invalid_shape, ${excluded.invalid_cuenta} invalid_cuenta, ` +
-        `${excluded.invalid_periodo} invalid_periodo, ${excluded.duplicate} duplicate`,
+        `${excluded.invalid_periodo} invalid_periodo, ${excluded.invalid_monto} invalid_monto, ` +
+        `${excluded.duplicate} duplicate`,
     );
   }
 
