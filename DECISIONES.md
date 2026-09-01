@@ -1,8 +1,5 @@
 # Decisiones
 
-> Máximo una página. Bullets están perfecto — sin adornos.
-> Borra estas instrucciones cuando lo llenes.
-
 ## Qué mostré y qué dejé fuera
 
 Incluí:
@@ -47,6 +44,7 @@ Lo que hice al respecto es de que justo cuando se hace el fetch de movimientos.j
 - Pasara la verificación de datos (si hay una cuenta, monto !== 0, está dentro del periodo correcto)
 - Normalizar categoría
 - No existen duplicados (si hay, se deja el que tenga "confirmed")
+- Transformar transacciones en USD a MXN (fixed rate 17MXN = 1USD)
 
 ## Cómo usé IA
 
