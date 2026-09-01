@@ -59,3 +59,8 @@ export function getMovimientos(): Transaction[] {
 
   return transactions;
 }
+
+/** The dataset's `periodo` (e.g. `"2026-08"`) — for display (page heading), not calculation; `Transaction.enPeriodo` already encodes period membership per-record. */
+export function getPeriodo(): string {
+  return data.periodo;
+}
