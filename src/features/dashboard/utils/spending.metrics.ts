@@ -16,7 +16,7 @@ function calificaParaResumen(transaction: Transaction): boolean {
  * so the gap reads as intentional rather than a bug.
  */
 export const NOTA_ALCANCE_GASTO =
-  'Solo movimientos confirmados de este mes con cuenta conocida (no incluye pendientes, programados, ni el movimiento en disputa).';
+  'Solo movimientos confirmados de este mes con cuenta conocida (no incluye pendientes, programados, ni en disputa).';
 
 /**
  * How much cash actually left this month: sum of `abs(monto)` for
