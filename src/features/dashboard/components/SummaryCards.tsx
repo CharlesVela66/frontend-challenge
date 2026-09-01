@@ -1,10 +1,8 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { useMovimientos } from '@/features/movimientos/state/useMovimientos';
 import { CATEGORIA_POR_DEFECTO } from '@/features/movimientos/transformers/normalize.movimiento.transformer';
 import { formatFechaSolo, formatMonto } from '@/features/movimientos/utils/movimiento.format';
 import { dayWithHighestSpend, spendByCategory, topCategory, totalSpent } from '../utils/spending.metrics';
-import { CategoryBreakdownBars } from './CategoryBreakdownBars';
+import { CategoryBreakdownDialog } from './CategoryBreakdownDialog';
 import { SummaryCard } from './SummaryCard';
 
 /**
@@ -15,7 +13,6 @@ import { SummaryCard } from './SummaryCard';
  */
 export function SummaryCards() {
   const { transactions } = useMovimientos();
-  const [mostrarDesglose, setMostrarDesglose] = useState(false);
 
   const categoria = topCategory(transactions);
   const gastoTotal = totalSpent(transactions);
@@ -29,20 +26,7 @@ export function SummaryCards() {
         value={categoria ? categoria.categoria : 'Sin datos'}
         hint={categoria ? formatMonto(categoria.total, 'MXN') : undefined}
       >
-        {categoria ? (
-          <>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="mt-2 -ml-2.5"
-              aria-expanded={mostrarDesglose}
-              onClick={() => setMostrarDesglose((v) => !v)}
-            >
-              {mostrarDesglose ? 'Ver menos' : 'Ver más'}
-            </Button>
-            {mostrarDesglose ? <CategoryBreakdownBars categorias={spendByCategory(transactions)} /> : null}
-          </>
-        ) : null}
+        {categoria ? <CategoryBreakdownDialog categorias={spendByCategory(transactions)} /> : null}
       </SummaryCard>
       <SummaryCard label="Total gastado este mes" value={formatMonto(gastoTotal, 'MXN')} />
       <SummaryCard
