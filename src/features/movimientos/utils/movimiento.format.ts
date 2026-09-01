@@ -19,6 +19,17 @@ export function formatFecha(fecha: string): string {
   return new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(fecha));
 }
 
+/** Same as `formatFecha` but with the time — for the detail dialog, where the table's date-only column would lose information. */
+export function formatFechaHora(fecha: string): string {
+  return new Intl.DateTimeFormat('es-MX', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(new Date(fecha));
+}
+
 /**
  * For a bare `YYYY-MM-DD` (no time/offset — e.g. `dayWithHighestSpend`'s
  * grouping key), NOT `formatFecha`'s ISO-with-offset input. Built from the

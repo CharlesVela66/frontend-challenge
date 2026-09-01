@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useMovimientos } from '../state/useMovimientos';
+import { MovimientoDetailDialog } from './MovimientoDetailDialog';
 import { MovimientoRow } from './MovimientoRow';
 
 export function TransactionsTable() {
   const { transactions } = useMovimientos();
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   // Newest first. `localeCompare` on `fecha` works as a chronological sort
   // here because every record shares the same `-06:00` offset — lexical
@@ -15,21 +18,29 @@ export function TransactionsTable() {
   }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Movimiento</TableHead>
-          <TableHead>Monto</TableHead>
-          <TableHead>Estado</TableHead>
-          <TableHead>Fecha</TableHead>
-          <TableHead>Categoría</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {ordenadas.map((transaction) => (
-          <MovimientoRow key={transaction.id} transaction={transaction} />
-        ))}
-      </TableBody>
-    </Table>
+    <>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Movimiento</TableHead>
+            <TableHead>Monto</TableHead>
+            <TableHead>Estado</TableHead>
+            <TableHead>Fecha</TableHead>
+            <TableHead>Categoría</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {ordenadas.map((transaction) => (
+            <MovimientoRow key={transaction.id} transaction={transaction} onSelect={setSelectedId} />
+          ))}
+        </TableBody>
+      </Table>
+      <MovimientoDetailDialog
+        transactionId={selectedId}
+        onOpenChange={(open) => {
+          if (!open) setSelectedId(null);
+        }}
+      />
+    </>
   );
 }

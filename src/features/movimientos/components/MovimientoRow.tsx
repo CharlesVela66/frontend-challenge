@@ -1,30 +1,31 @@
 import { Badge } from '@/components/ui/badge';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { CATEGORIA_POR_DEFECTO } from '../transformers/normalize.movimiento.transformer';
-import type { Estado, Transaction } from '../types/movimiento.types';
+import { VARIANTE_POR_ESTADO } from '../constants/estado.constants';
+import type { Transaction } from '../types/movimiento.types';
 import { formatFecha, formatMonto } from '../utils/movimiento.format';
-
-type BadgeVariant = 'default' | 'secondary' | 'outline' | 'destructive';
-
-/** `en_disputa` reads as destructive on purpose — it's the one status that means "something's wrong here," not just "not settled yet." */
-const VARIANTE_POR_ESTADO: Record<Estado, BadgeVariant> = {
-  confirmada: 'secondary',
-  pendiente: 'outline',
-  programada: 'outline',
-  en_disputa: 'destructive',
-  desconocido: 'outline',
-};
 
 interface MovimientoRowProps {
   transaction: Transaction;
+  onSelect: (id: string) => void;
 }
 
-export function MovimientoRow({ transaction }: MovimientoRowProps) {
+export function MovimientoRow({ transaction, onSelect }: MovimientoRowProps) {
   const esIngreso = transaction.monto >= 0;
   const esSinCategoria = transaction.categoria === CATEGORIA_POR_DEFECTO;
 
   return (
-    <TableRow>
+    <TableRow
+      tabIndex={0}
+      className="cursor-pointer"
+      onClick={() => onSelect(transaction.id)}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onSelect(transaction.id);
+        }
+      }}
+    >
       <TableCell className="max-w-64 truncate" title={transaction.descripcion}>
         {transaction.descripcion}
       </TableCell>
