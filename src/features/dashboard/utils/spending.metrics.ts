@@ -47,33 +47,30 @@ export interface CategorySpend {
 }
 
 /**
- * Net spend per category — refunds in the same category net against its
- * expenses (e.g. the Amazon purchase + its exact refund cancel out under
- * "Compras"). A category whose confirmed, in-period movements sum to zero
- * or positive (refunds outweighing purchases, or a pure-income category
- * like "Ingresos") isn't spend and is left out of the result entirely,
- * rather than showing as a $0 bar. Sorted descending by `total`.
+ * Spend per category — sum of `abs(monto)` for negative, confirmed,
+ * in-period transactions, grouped by `categoria`. Same filter as
+ * `totalSpent`, just bucketed; summing every `total` here always equals
+ * `totalSpent`'s number. A positive-`monto` row (income, or a refund) in
+ * a category does **not** reduce that category's total — it's simply not
+ * counted, the same way `totalSpent` doesn't count it. Concretely: the
+ * Amazon purchase (`txn_007`, `-1899`) counts fully toward "Compras";
+ * its refund (`txn_028`, `+1899`) doesn't touch that number at all.
+ * Sorted descending by `total`.
  */
 export function spendByCategory(transactions: Transaction[]): CategorySpend[] {
   const sumsByCategory = new Map<string, number>();
 
   for (const t of transactions) {
-    if (!esConfirmadaEnPeriodo(t)) continue;
-    sumsByCategory.set(t.categoria, (sumsByCategory.get(t.categoria) ?? 0) + t.monto);
+    if (!esConfirmadaEnPeriodo(t) || t.monto >= 0) continue;
+    sumsByCategory.set(t.categoria, (sumsByCategory.get(t.categoria) ?? 0) + Math.abs(t.monto));
   }
 
-  const result: CategorySpend[] = [];
-  for (const [categoria, sum] of sumsByCategory) {
-    const total = Math.max(-sum, 0);
-    if (total > 0) {
-      result.push({ categoria, total });
-    }
-  }
-
-  return result.sort((a, b) => b.total - a.total);
+  return [...sumsByCategory.entries()]
+    .map(([categoria, total]) => ({ categoria, total }))
+    .sort((a, b) => b.total - a.total);
 }
 
-/** The single highest-net-spend category, or `undefined` if nothing qualifies as spend. */
+/** The single highest-spend category, or `undefined` if nothing qualifies as spend. */
 export function topCategory(transactions: Transaction[]): CategorySpend | undefined {
   return spendByCategory(transactions)[0];
 }
