@@ -1,6 +1,13 @@
 import { useMovimientos } from '@/features/movimientos/state/useMovimientos';
 import { formatFechaSolo, formatMonto } from '@/features/movimientos/utils/movimiento.format';
-import { dayWithHighestSpend, spendByCategory, topCategory, totalIncome, totalSpent } from '../utils/spending.metrics';
+import {
+  NOTA_ALCANCE_GASTO,
+  dayWithHighestSpend,
+  spendByCategory,
+  topCategory,
+  totalIncome,
+  totalSpent,
+} from '../utils/spending.metrics';
 import { CategoryBreakdownDialog } from './CategoryBreakdownDialog';
 import { SummaryCard } from './SummaryCard';
 
@@ -22,8 +29,12 @@ export function SummaryCards() {
       >
         {categoria ? <CategoryBreakdownDialog categorias={spendByCategory(transactions)} /> : null}
       </SummaryCard>
-      <SummaryCard label="Total gastado este mes" value={formatMonto(gastoTotal, 'MXN')} />
-      <SummaryCard label="Total ingresado este mes" value={formatMonto(ingresoTotal, 'MXN')} />
+      <SummaryCard label="Total gastado este mes" value={formatMonto(gastoTotal, 'MXN')} tooltip={NOTA_ALCANCE_GASTO} />
+      <SummaryCard
+        label="Total ingresado este mes"
+        value={formatMonto(ingresoTotal, 'MXN')}
+        tooltip={NOTA_ALCANCE_GASTO}
+      />
       <SummaryCard
         label="Día con más gasto"
         value={diaTope ? formatFechaSolo(diaTope.fecha) : 'Sin datos'}

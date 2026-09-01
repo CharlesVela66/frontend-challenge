@@ -5,6 +5,18 @@ function esConfirmadaEnPeriodo(transaction: Transaction): boolean {
 }
 
 /**
+ * `totalSpent`, `totalIncome`, `spendByCategory`, and `topCategory` all
+ * scope to confirmada + in-period only — a `pendiente`/`programada`
+ * movement hasn't settled yet, so it's excluded here even though the
+ * transactions table shows it. That's why a manual sum of a category's
+ * rows in the table can come out higher than that category's bar: the
+ * table shows everything valid, these numbers show only what's settled.
+ * Surfaced in the UI (as a caption/hint) next to every figure that uses
+ * this scope, so the gap reads as intentional rather than a bug.
+ */
+export const NOTA_ALCANCE_GASTO = 'Solo movimientos confirmados de este mes (no incluye pendientes ni programados).';
+
+/**
  * How much cash actually left this month: sum of `abs(monto)` for
  * negative, `confirmada`, in-period transactions. Refunds don't reduce
  * this — a refund is a separate movement, not an undo of the original

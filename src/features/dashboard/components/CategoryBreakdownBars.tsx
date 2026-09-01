@@ -1,5 +1,6 @@
 import { formatMonto } from '@/features/movimientos/utils/movimiento.format';
-import type { CategorySpend } from '../utils/spending.metrics';
+import { NOTA_ALCANCE_GASTO, type CategorySpend } from '../utils/spending.metrics';
+import { InfoTooltip } from './InfoTooltip';
 
 interface CategoryBreakdownBarsProps {
   categorias: CategorySpend[];
@@ -19,21 +20,28 @@ export function CategoryBreakdownBars({ categorias }: CategoryBreakdownBarsProps
   const max = categorias[0]?.total ?? 0;
 
   return (
-    <ul className="mt-3 flex flex-col gap-2">
-      {categorias.map((c) => (
-        <li key={c.categoria} className="flex flex-col gap-1">
-          <div className="flex items-baseline justify-between text-sm">
-            <span className="font-medium">{c.categoria}</span>
-            <span className="text-muted-foreground">{formatMonto(c.total, 'MXN')}</span>
-          </div>
-          <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-            <div
-              className="h-full rounded-full bg-primary"
-              style={{ width: `${max > 0 ? (c.total / max) * 100 : 0}%` }}
-            />
-          </div>
-        </li>
-      ))}
-    </ul>
+    <div className="mt-3 flex flex-col gap-3">
+      {/* "Gasto por categoría" is already the dialog's own title (CategoryBreakdownDialog) — this label is deliberately different so it doesn't repeat. */}
+      <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+        Alcance
+        <InfoTooltip>{NOTA_ALCANCE_GASTO}</InfoTooltip>
+      </div>
+      <ul className="flex flex-col gap-2">
+        {categorias.map((c) => (
+          <li key={c.categoria} className="flex flex-col gap-1">
+            <div className="flex items-baseline justify-between text-sm">
+              <span className="font-medium">{c.categoria}</span>
+              <span className="text-muted-foreground">{formatMonto(c.total, 'MXN')}</span>
+            </div>
+            <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+              <div
+                className="h-full rounded-full bg-primary"
+                style={{ width: `${max > 0 ? (c.total / max) * 100 : 0}%` }}
+              />
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
