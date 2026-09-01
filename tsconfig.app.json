@@ -9,6 +9,10 @@
     "useDefineForClassFields": true,
     "skipLibCheck": true,
 
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
