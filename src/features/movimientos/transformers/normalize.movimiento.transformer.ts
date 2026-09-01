@@ -8,7 +8,7 @@ export type NormalizationResult =
   | { ok: true; transaction: Transaction }
   | { ok: false; reason: NormalizationFailureReason; id: string };
 
-const CATEGORIA_POR_DEFECTO = 'Otros';
+export const CATEGORIA_POR_DEFECTO = 'Otros';
 
 /** True when `fecha`'s `YYYY-MM` matches the dataset's `periodo` (e.g. "2026-08"). */
 function estaEnPeriodo(fecha: string, periodo: string): boolean {
