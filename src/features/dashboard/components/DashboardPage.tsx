@@ -1,7 +1,6 @@
 import { TransactionsTable } from '@/features/movimientos/components/MovimientosTable';
 import { getPeriodo } from '@/features/movimientos/services/movimientos.service';
 import { SummaryCards } from './SummaryCards';
-import { TopBar } from './TopBar';
 
 function periodoLegible(periodo: string): string {
   // periodo is "YYYY-MM"; append a day + neutral time so it parses as
@@ -17,7 +16,6 @@ export function DashboardPage() {
         <h1 className="text-xl font-semibold">Tus movimientos de {periodoLegible(getPeriodo())}</h1>
         <p className="text-sm text-muted-foreground">En qué se fue tu dinero este mes, de un vistazo.</p>
       </header>
-      <TopBar />
       <SummaryCards />
       <TransactionsTable />
     </div>
