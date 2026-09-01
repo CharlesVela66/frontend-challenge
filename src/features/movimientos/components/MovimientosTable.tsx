@@ -104,7 +104,8 @@ export function TransactionsTable() {
           }}
         >
           <SelectTrigger className="w-full sm:w-40">
-            <SelectValue />
+            {/* SelectValue has no built-in value→label lookup — without a `children` function it just renders the raw value ("__todas__"). */}
+            <SelectValue>{(value: string) => (value === TODAS_CATEGORIAS ? 'Todas las categorías' : value)}</SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={TODAS_CATEGORIAS}>Todas las categorías</SelectItem>
@@ -123,7 +124,7 @@ export function TransactionsTable() {
           }}
         >
           <SelectTrigger className="w-full sm:w-40">
-            <SelectValue />
+            <SelectValue>{(value: string) => (value === TODOS_ESTADOS ? 'Todos los estados' : value)}</SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={TODOS_ESTADOS}>Todos los estados</SelectItem>
